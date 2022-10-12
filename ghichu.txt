@@ -1,0 +1,235 @@
+[1] : Hàm setDefaultCloseOperation(int operation): Đặt hành động mặc định sẽ xảy ra khi người dùng đóng JFrame. Nếu không dùng hàm này để đặt thì mặc định là HIDE_ON_CLOSE (1) – Khi đóng frame sẽ bị ẩn đi chứ hoàn toàn không đóng lại.
+[2] : List interface trong Java là một tập hợp theo thứ tự cho phép chúng ta thêm và xóa các phần tử như một mảng.
+[3] : Để bắt sự kiện (bất kì sự kiện nào thì phải đăng kí bằng cái này trước) Lớp xử lý MouseEvent nên triển khai interface MouseListener. Đối tượng của lớp đó phải được đăng ký với một thành phần. Đối tượng có thể được đăng ký bởi sử dụng phương thức addMouseListener(). Cú pháp khai báo cho java.awt.event.MouseListener interface như sau:
+[4] : 
+    - vòng lặp for này để cho mảng matran[i][j] lưu các giá trị từ 1 đến n*n 
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matran[i][j] = i * n + j + 1;
+            }
+        }
+
+    - vòng lặp for này để ramdom lại các giá trị trong mảng đó . 
+        for (int r = 0; r < n * n; r++) {
+			int i1 = rand.nextInt(n);  // rand.nextInt(n); trả về một số int ngẫu nhiên từ 0 đến giá trị < n 
+			int j1 = rand.nextInt(n);  
+			int i2 = rand.nextInt(n);
+			int j2 = rand.nextInt(n);  
+            // nói thêm : i1,i2,j1,j2 hoàn toàn có thể giống nhau -> không quan trọng 
+
+			int tmp = matran[i1][j1]; // i1,j1 là một các giá trị ngẫu nhiên nên phần tử ở vị trí hàng i1 cột j1 : matran[i1][j1] được lấy ra ngẫu nhiên , lưu giá trị đó vào biến tạm tmp 
+			matran[i1][j1] = matran[i2][j2]; // tiếp tục lấy ngẫu nhiên ra một phần tử khác tại hàng i2 cột j2 : matran[i2][j2] và gán cho matran[i1][j1] 
+			matran[i2][j2] = tmp; // sau đó lại gán tmp cho matran[i2][j2]
+
+            // tóm tắt đơn giản là : lấy ra ngẫu nhiên 2 phần tử trong mảng sau đó hoán đổi giá trị cho nó thông quan biến trung gian tmp 
+		}
+[5] : Mặc định khi một JFrame được khởi tạo xong nó sẽ ở trạng thái ẩn, tất là người dùng sẽ không thấy được. Nếu muốn hiển thị JFrame này đến người dùng chúng ta cần gọi đến setVisible(boolean visible) với giá trị truyền vào
+[6] : 
+
+	List<Point> dadanh = new ArrayList<Point>(); // [2] // lưu mảng các điểm đã đánh 
+        ...
+
+    - Hàm xử lí sự kiện click vào một ô trong bảng . 
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            // lấy tọa độ x,y của điểm được click trong cửa số window
+            int x = e.getX();
+            int y = e.getY();
+            // xử lí khi click ngoài bảng thì không làm gì cả 
+            if (x < os || x >= os + n * s) // nếu tạo độ x được click nhỏ hơn os tức là nằm trong khoảng trắng phạm vi từ biên phải cho đến lề trái của bảng (padding left)(chưa đến bảng theo chiều ngang) hoặc lớn hơn os + n*s nằm trong padding right (quá bảng theo chiều ngang (tương tự))
+                return; // thì không làm gì cả 
+            if (y < os || y >= os + n * s) // tương tự x nhưng theo chiều dọc 
+                return;
+
+            // ngược lại thì 
+            int ix = (x - os) / s; // lấy tọa độ x trừ đi padding sau đó chia cho kích thước của mỗi ô vuông sẽ được vị trí ô được click trong ma trận 
+            int iy = (y - os) / s;
+            for (Point d : dadanh) { // lặp qua các điểm đã đuọc đánh 
+                if (ix == d.x && iy == d.y) // nếu như cả x và y đều trùng thì điểm đó đã được đánh rồi 
+                    return; // không làm gì cả 
+            }
+
+            // xử lí sự kiện phải đánh theo thứ tự , ví dụ ô mới nhất được đánh là 9 thì ô tiếp theo phải là 10 còn click ô 11 12 các kiểu thì không được 
+            if (matran[ix][iy] != dadanh.size() + 1) // giá trị của ma trận được đánh tự 1 đến n*n và số lượng ô đã đánh cũng sẽ tăng tự 1 đến n*n 
+            // nên giá trị của ô được đánh mới nhất sẽ trùng với số lượng các điểm đã đánh 
+            // mặc khác ta có điểm tiếp theo phải có giá trị = với giá trị của điểm mới nhất + 1 
+            // từ đó suy ra điểm tiếp theo phải có giá trị = với số lượng các điểm đã đánh + 1 
+                return; // nếu khác thì return không làm gì cả 
+            dadanh.add(new Point(ix, iy)); // ngược lại không có return nào thì thêm điểm đó vào danh sách các điểm đã được đánh 
+            this.repaint(); // Trong phương thức xử lý sự kiện, chúng ta gọi phương thức repaint() để chương trình cập nhật lại vị trí mới của mỗi điểm.
+        }
+[7] : public abstract void fillRect(int x, int y, int width, int height): được sử dụng để điền màu mặc định và độ rộng và chiều cao đã cho vào hình chữ nhật.
+[8] : g.fillRect(x, y, s, s); tô màu cho hình nhữ nhật cách lề trái của cửa sổ window một khoảng x , lề trên một khoảng y và hình chữ nhật có kích thước là chiều dài là s , chiều rộng là s , [margin-left,margin-top,width,height]
+[9] : public abstract void drawLine(int x1, int y1, int x2, int y2): được sử dụng để vẽ line giữa hai điểm có tọa độ lần lượt là (x1, y1) và (x2, y2).
+        // đường kẻ ngang 
+        g.drawLine(os, os + i * s, os + n * s, os + i * s); // đường được nối từ hai điểm A,B
+        A(os, os + i * s) 
+        B(os + n * s, os + i * s) 
+        giải thích : os là padding , os + i * s là padding + số ô nhân với kích thước của mỗi o => ra được tọa độc của điểm đầu
+        // đường kẻ ngang có tọa độ y giống nhau đều cùng nằm trên một hàng và đường kể đều có x chạy từ os đến os + n * s  
+        (từ padding đến padding + với số kích thước mỗi ô nhân số ô (đơn giản và đã được giải thích ở trên))
+
+        // tóm tắt : đường kẻ ngang được vẽ có x chạy từ os đến os + s * n (từ padding đến padding + kich thước của bảng)
+            y của hai điểm cùng nằm trên một đường kẻ ngang giống nhau và đều là : os + i*s (padding(top) + số lượng ô nhân với kích thước của mỗi ô)
+            // ví dụ đường kẻ thứ nhất thì i = 0 vì chưa có ô nào , đường kẻ thứ 2 thì đã có 1 ô nên dịch xuống 1 ô để kẻ đường thứ 2 
+
+        // tương tự với đường kẻ dọc  
+        
+[10] : public abstract void drawString(String str, int x, int y): được sử dụng để vẽ chuỗi đã cho tại tọa độ x,y 
+[11] : 
+    + Xử lí sẽ được chia ra ở cả 2 phía , Ví dụ :
+        + Ở TimSoClient xử lí một phần đó là phần đánh vào ô nào được hay không các kiểu ,...
+        + Ở TimSoServer sẽ xử lí việc kiểm tra số lượng người vào (4 người) , màu đánh của các người đó ,...
+
+    + Client : 
+    Lặp đi lặp lại các công việc sau : 
+        1. Người chơi sẽ gửi 1 tin nhắn “want to join” tới server để yêu cầu server cho phép tham gia trò chơi. 
+            Nếu server trả lời "you are a player" thì cho phép client có thể sử dụng chuột để thực hiện cuộc chơi. 
+            Còn nếu trả lời "you are a viewer" thì chỉ được phép xem.
+            Lặp đi lặp lại các công việc sau:
+        3. Gửi tọa độ muốn đánh cho server nếu được phép tham gia.
+        5. Nếu nhận được thông báo từ server tọa độ ô x, y đã được người chơi thứ i lấy được. 
+            Tô màu lên ô x, y để biết ai đã lấy ô đỏ. Các màu xanh, đỏ, tím, vàng tương ứng với i=1, 2, 3, 4
+
+    + Server : 
+    Lặp đi lặp lại các công việc sau : 
+        - Nhận tin nhẫn 
+        2. Nếu là tin nhắn là “want to join" thì tùy | thuộc vào số lượng người chơi đã yêu cầu mà cho phép client 
+            có được tham gia chơi hay | không. Nếu đồng ý cho tham gia chơi thì trả về “you are a player”, 
+            nếu không thì trả về “you are a viewer".
+        4. Nếu nhận tọa độ ô x, y từ client thứ ỉ gửi tới, kiểm tra nếu hợp lệ thì gửi cho các client thông 
+            báo người chơi thứ i đã lấy được tọa tọa đỏ.
+
+
+    + Note : 
+        + 4 Người chơi => 4 màu => mỗi người một màu 
+            + điểm giống so với Caro : 2 Người được phân biệt bởi X và O , 4 người phân biệt bởi 4 màu 
+            + điểm khác so với Caro : mỗi người chỉ được đánh một lượt : 
+                String s = "o";
+                if (i%2!=0) s="x"; // dùng cái này để xử lí việc mỗi người chỉ được đánh 1 cái (tại client luôn)
+                g.drawString(s, x, y);
+            
+                + ở TimSo thì ai nhanh thì tìm được nhiều số => không có chờ người khác đánh . 
+                => khỏe hơn Caro nữa vì ta không cần xử lí thêm ta chỉ cần xử lí những số đánh rồi 
+                thì không được đánh lại ta nữa : 
+                    if (matran[ix][iy] != dadanh.size() + 1)
+                    return;
+            + Ở bên Caro phân biệt người thứ 3 được thì ta sẽ làm tương tự để phân biệt người thứ 1 đến thứ 4 để đánh màu 
+            và phân biệt người thứ 5 trở đi chỉ xem 
+
+    + CHÚ Ý QUAN TRỌNG : KHI CHẠY NÊN TẮT HẾT TẤT CẢ NHỮNG SERVER CŨNG NHƯ CLIENT CŨ RỒI CHẠY MỚI 
+        + Server cũ có thể gây nhiễu , gây lỗi vì truyền một chuỗi gì đó đến cho client nhận => gây ra chưa làm gì 
+        đã nhận tọa độ và đánh vào => gây lỗi 
+            for (Point p : server.dadanh) {
+                // luồng Server gửi chuỗi về client 
+                try {
+                    DataOutputStream dos = new DataOutputStream(soc.getOutputStream());
+                    dos.writeUTF(p.x + "," + p.y);
+                } catch (Exception e) {
+                }
+            }
+
+            loop: while (true) {
+                // Server nhận chuỗi từ luồng client để xử lí 
+                try {
+                    DataInputStream dis = new DataInputStream(soc.getInputStream());
+                    String s = dis.readUTF();
+
+                    .....
+
+
+            /// +++ 
+            // Client nhận liên tục từ Server để xử lí 
+            public void run() {
+                while (true) {
+                    try {
+                        String s = dis.readUTF();
+                        int ix = Integer.parseInt(s.split(",")[0]);
+                        int iy = Integer.parseInt(s.split(",")[1]);
+                        System.out.print(ix + " " + iy+"\n");
+                        dadanh.add(new Point(ix, iy));
+                        this.repaint();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+            /// +++
+
+    + VẤN ĐỀ : 
+        + Có một điểm chung là cả hai cái Caro và Timso đều cập nhật được dữ liệu khi có người khác click vào 
+            + Nhưng có một vấn đề nãy sinh là bên Caro thì không sao nhưng bên Timso thì do radom các giá trị của mảng 
+            nên mỗi khi có người mới vào thì bảng đó sẽ khác bảng cũ . 
+            + Tọa độ của những ô được đánh của các mảng vẫn được giữ nguyên và cập nhật nhưng giá trị của các ô đó 
+            là khác nhau . 
+            GIẢI PHÁP : lưu trữ và cập nhật lại tọa độ của ô thì ta cũng lưu trữ và cập nhật lại giá trị của các ô .  
+
+        + Đầu tiên mình sẽ cho 4 người vào đánh được , đến người thứ 5 thì không được . 
+            hiện tại là 2 người chơi được , người thứ 3 trở đi là chỉ vào xem 
+
+    + Sau khi code ngon hết rồi mình mới code thêm cái nhận chuỗi và trả về chuỗi (nó cũng giống như nhập tên trong chatroom thôi)
+
+
+[12] : 
+    + Để đảm bảo tất cả các bảng của client đều phải giống nhau => xây dựng bảng ngay tại server 
+    + Hàm main được chạy đầu tiên , trong main có new TimSoServer();
+    + [12.1] : Xuly x = new Xuly(soc, this, n, matran);  
+        + Khi accept cho người đó vào thì Gọi đến hàm Xuly , (thông thường những cái trước ta sẽ truyền vàp soc và this thôi) 
+        nhưng với bài này vì khởi tạo bảng từ server -> lấy các giá trị từ server nên ta phải truyền bảng đi nữa . 
+        -> truyền matran và n xuống cho class hàm Xuly của class Xuly (vì các giá trị matran và n) là của class TimSoServer nên 
+        chỉ có class đó dùng được . 
+
+    + [12.2] : Trong hàm xử lí => khai báo các biến tương ứng để nhận các giá trị được truyền xuống 
+    + [12.3] : Lặp qua mảng và cộng các giá trị của mảng lại thành một chuỗi ss 
+    + [12.4] : Cuối cùng là truyền chuỗi đó đi cho các client 
+    + [12.5] : Lưu ý là hàm Xuly chỉ được thực hiện khi có ít nhất một người nào đó vào 
+        => tức là nó sẽ lắng nghe liên tục chỉ cần có người vào thì hàm Xuli được thực hiện còn không thì thôi 
+        nên không thắt mắt là trong hàm có câu lệnh System.out.print("ss:" + ss); (in chuỗi các giá trị của ma trận ra)
+        mà không có thì là do chưa ai vào . 
+
+[12a] : Ở bên TimsoClient cũng khai báo một mảng matran để nhận các giá trị từ Server  
+[14] : ngay trong hàm khởi tạo TimSoClient() , ngay sau khi khai báo biến dis , dos là ta gán giá trị cho matran của client liền 
+        try {
+            String s = dis.readUTF(); // nhận một chuỗi từ Server 
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    matran[i][j] = Integer.parseInt(s.split(",")[i * n + j]); 
+                }
+            }
+            this.repaint();
+        } catch (Exception e) {
+
+        }
+        => // i và j chạy từ 0 đến n nên phần tử [i][j] của mảng 2 chiều sẽ tương ứng với phần tử thứ [i*n+j] của mảng 1 chiều được split ra từ s 
+        => ví dụ thế i vs j vs n bằng con số cụ thể sẽ dễ hiểu hơn 
+
+[15] : 
+    + Nhôi ra một phần tử cuối cùng của mảng là giá trị soluong gửi về cho client biết để đánh màu
+    + Thật ra ở đây còn bắt lỗi nhiều nữa . Gửi về cho client biết mình là người thứ mấy vào chơi , lỡ có người đang chơi mà out ra
+    ta phải bắt lỗi đó nữa . 
+    NÊN TẠM THỜI LÀ CỨ NGHĨ 4 NGƯỜI CHƠI SẼ KHÔNG CÓ NGƯỜI NÀO THOÁT RA .  
+    
+[16] : 
+    + Ở client ta cũng sẽ khai báo biến thutu để lưu thứ tự người đó vào chơi 
+    + thutu = Integer.parseInt(s.split(",")[n*n]);
+        mảng vuông nên số phần tử mảng sẽ là n*n chạy từ 0 đến n*n - 1 
+        nên giá trị soluong lưu vào bên server ta để ở cuối nên nó sẽ có vị trí là n*n 
+
+
+SAU KHI THÊM THỨ TỰ THÌ NÓ SINH RA MỘT LỖI LÀ : MÀU ĐÓ CHỈ CÓ TÁC DỤNG TRÊN CLIENT ĐÓ VÀ TỪ NGƯỜI THỨ 5 TRỞ ĐI THÌ KHÔNG CÓ MÀU GÌ CẢ 
+    => TẠO THÊM MỘT LIST giống như List<Point> , thay vì mình lưu tọa độ x y thì mình sẽ lưu thứ tự của được đánh và người đánh . 
+    Vì giá trị của ô sẽ đi đôi với thứ tự đánh nên không lo . Mình sẽ lưu thứ tự người vào đi đôi với thứ tự đánh . 
+
+[17] : Client ngoài việc gửi tọa độ x,y của mình đánh ra thì phải gửi thêm thứ tự đánh của mình nữa . 
+[18] : Server nhận giá trị thứ tự người chơi sau đó nếu không có lỗi gì thì tổng hợp lại và trả về lại cho Client để vẽ ra server.thutudanh.add(new Point(server.dadanh.size(),thutu)); // [18]
+[19] : 
+[20] : 
+[21] : 
+[22] : 
+[23] : 
+[24] : 
+[25] : 
+[26] : 
+[27] : 
+[28] : 
+[29] : 
